@@ -6,6 +6,7 @@ namespace Pustovoy.Lopushok.Domain.Entities
     public partial class Product
     {
         private string? _image;
+
         public Product()
         {
             ProductCostHistories = new HashSet<ProductCostHistory>();
@@ -22,7 +23,7 @@ namespace Pustovoy.Lopushok.Domain.Entities
         {
             get => (_image == string.Empty) || (_image == null)
                 ? $"..\\Resources\\picture.png"
-                : $"..\\Resources{_image}"; // .Replace("jpg", "jpeg")
+                : $"..\\Resources{_image}";
             set => _image = value;
         }
         public int? ProductionPersonCount { get; set; }

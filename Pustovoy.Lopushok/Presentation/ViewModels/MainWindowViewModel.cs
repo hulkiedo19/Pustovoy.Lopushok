@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pustovoy.Lopushok.Domain.Entities;
-using Pustovoy.Lopushok.Infrastructure.Persistence;
+using Pustovoy.Lopushok.Infrastucture.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
