@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\**" />
+    <Compile Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Application\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="Application\**" />
+    <None Remove="Infrastructure\**" />
+    <Page Remove="Application\**" />
+    <Page Remove="Infrastructure\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\lopushok.png" />
     <None Remove="Resources\picture.png" />
     <None Remove="Resources\Products\paper_0.jpeg" />
     <None Remove="Resources\Products\paper_1.jpeg" />
@@ -38,9 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\" />
     <Folder Include="Domain\Entities\" />
-    <Folder Include="Infrastructure\Persistence\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\lopushok.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\picture.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
