@@ -23,16 +23,23 @@ namespace Pustovoy.Lopushok.Presentation.Commands
         public override void Execute(object parameter)
         {
             if (_viewModel.SearchText == "")
-            {
-                using (ApplicationDbContext context = new ApplicationDbContext())
-                {
-                    _viewModel.Products = context.Products
-                        .Include(p => p.ProductType)
-                        .ToList();
-                }
-                return;
-            }
+                FindAllItems();
+            else
+                FindItemsWithText();
+        }
 
+        private void FindAllItems()
+        {
+            using (ApplicationDbContext context = new ApplicationDbContext())
+            {
+                _viewModel.Products = context.Products
+                    .Include(p => p.ProductType)
+                    .ToList();
+            }
+        }
+
+        private void FindItemsWithText()
+        {
             using (ApplicationDbContext context = new ApplicationDbContext())
             {
                 _viewModel.Products = context.Products
