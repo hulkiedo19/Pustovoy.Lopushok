@@ -17,6 +17,7 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
         private string _searchText;
         private int _sortIndex;
         private int _filterIndex;
+        private int _selectedIndex;
 
         public List<Product> Products
         {
@@ -38,8 +39,16 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
             get => _filterIndex;
             set => Set(ref _filterIndex, value, nameof(FilterIndex));
         }
+        public int SelectedIndex
+        {
+            get => _selectedIndex;
+            set => Set(ref _selectedIndex, value, nameof(SelectedIndex));
+        }
 
         public ICommand Search => new SearchCommand(this);
+        public ICommand AddItem => new AddItemCommand(this);
+        public ICommand EditItem => new EditItemCommand(this);
+        public ICommand DeleteItem => new DeleteItemCommand(this);
 
         public MainWindowViewModel()
         {
