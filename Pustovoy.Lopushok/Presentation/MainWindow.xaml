@@ -6,14 +6,17 @@
         xmlns:local="clr-namespace:Pustovoy.Lopushok.Presentation"
         xmlns:vm="clr-namespace:Pustovoy.Lopushok.Presentation.ViewModels"
         mc:Ignorable="d"
-        Title="Лопушок" Height="450" Width="800">
+        Title="Лопушок" 
+        Height="600"
+        Width="800"
+        Icon="../Resources/lopushok.ico">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.15*"/>
+            <RowDefinition Height="0.125*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.08*"/>
         </Grid.RowDefinitions>
@@ -27,18 +30,54 @@
             </Grid.ColumnDefinitions>
 
             <TextBox
-                Grid.Column="0"/>
+                Grid.Column="0"
+                Margin="10"
+                FontSize="20"
+                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding 
+                        Command="{Binding Search}"        
+                        Key="Enter"/>
+                </TextBox.InputBindings>
+            </TextBox>
             <ComboBox 
-                Grid.Column="1"/>
+                Grid.Column="1"
+                FontSize="20"
+                Margin="10">
+                <ComboBoxItem IsSelected="True" Visibility="Collapsed" Content="Сортировка"/>
+                <ComboBoxItem Content="Наименование &gt;"/>
+                <ComboBoxItem Content="Наименование &lt;"/>
+                <ComboBoxItem Content="Номер цеха &gt;"/>
+                <ComboBoxItem Content="Номер цеха &lt;"/>
+                <ComboBoxItem Content="Минимальная стоимость &gt;"/>
+                <ComboBoxItem Content="Минимальная стоимость &lt;"/>
+            </ComboBox>
             <ComboBox 
-                Grid.Column="2"/>
+                Grid.Column="2"
+                FontSize="20"
+                Margin="10">
+                <ComboBoxItem Content="Фильтрация" IsSelected="True" Visibility="Collapsed"/>
+                <ComboBoxItem Content="Тип1"/>
+                <ComboBoxItem Content="Тип2"/>
+                <ComboBoxItem Content="Тип3"/>
+                <ComboBoxItem Content="Тип4"/>
+                <ComboBoxItem Content="Тип5"/>
+            </ComboBox>
         </Grid>
 
         <ListView
             ItemsSource="{Binding Products}"
             Grid.Row="1"
+            BorderBrush="White"
             HorizontalAlignment="Center"
             ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter 
+                        Property="Margin"
+                        Value="0, 5, 0, 5"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border
@@ -50,37 +89,61 @@
                             Width="750"
                             Height="100">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="110"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
 
                             <Image 
                                 Grid.Column="0"
+                                Margin="10, 10, 0, 10"
                                 Source="{Binding Image}"/>
 
-                            <StackPanel
+                            <Grid
                                 Grid.Column="1"
-                                Orientation="Vertical"
-                                VerticalAlignment="Center">
-                                <TextBlock 
-                                    Text="{Binding Title}"
-                                    Margin="0, 0, 0, 5"/>
-                                <TextBlock 
-                                    Text="{Binding ProductType.Title}"
-                                    Margin="0, 5, 0, 5"/>
+                                Height="100"
+                                Margin="30, 0, 0, 0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel
+                                    Grid.Row="0"
+                                    VerticalAlignment="Top"
+                                    Orientation="Horizontal"
+                                    Margin="0, 15, 0, 0">
+                                    <TextBlock 
+                                        Text="{Binding ProductType.Title}"
+                                        FontSize="20"/>
+                                    <TextBlock 
+                                        Text=" | "
+                                        FontSize="20"/>
+                                    <TextBlock 
+                                        Text="{Binding Title}"
+                                        FontSize="20"/>
+                                </StackPanel>
+
                                 <TextBlock
+                                    Grid.Row="0"
                                     Text="{Binding ArticleNumber}"
-                                    Margin="0, 5, 0, 5"/>
+                                    Margin="0, 0, 0, 0"
+                                    FontSize="15"
+                                    VerticalAlignment="Bottom"/>
+
                                 <TextBlock
-                                    Text="Материалы"
-                                    Margin="0, 5, 0, 0"/>
-                            </StackPanel>
+                                    Grid.Row="1"
+                                    Text="{Binding Materials}"
+                                    TextWrapping="WrapWithOverflow"
+                                    FontSize="15"/>
+                            </Grid>
 
                             <TextBlock
                                 Grid.Column="2"
-                                Text="Стоимость"
-                                VerticalAlignment="Center"/>
+                                Text="{Binding Cost}"
+                                FontSize="15"
+                                VerticalAlignment="Top"
+                                Margin="0, 15, 0, 0"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
