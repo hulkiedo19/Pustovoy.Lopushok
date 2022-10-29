@@ -3,6 +3,7 @@ using Pustovoy.Lopushok.Domain.Entities;
 using Pustovoy.Lopushok.Infrastucture.Persistence;
 using Pustovoy.Lopushok.Presentation.ViewModels;
 using System.Linq;
+using System.Windows;
 
 namespace Pustovoy.Lopushok.Presentation.Commands
 {

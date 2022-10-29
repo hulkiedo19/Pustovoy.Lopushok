@@ -16,51 +16,50 @@
             <TextBlock 
                 Text="Input Title"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_Title"/>
 
             <TextBlock 
                 Text="Input ProductType id"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_ProductTypeId"/>
 
             <TextBlock 
                 Text="Input Description"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_Description"/>
 
             <TextBlock 
                 Text="Input Article number"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_ArticleNumber"/>
 
             <TextBlock 
                 Text="Input Image path"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_ImagePath"/>
 
             <TextBlock 
                 Text="Input person count"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_PersonCount"/>
 
             <TextBlock 
                 Text="Input workshop number"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_WorkshopNumber"/>
 
             <TextBlock 
                 Text="Input mincostforagent"/>
             <TextBox 
-                Text=""/>
+                x:Name="TB_MinCostForAgent"/>
 
             <Button 
                 Content="Save"
                 Margin="0, 10, 0, 0"
-                Command=""/>
+                Click="Button_Click_1"/>
             <Button 
                 Content="Exit"
                 Margin="0, 10, 0, 0"
-                Command=""
                 Click="Button_Click"/>
         </StackPanel>
     </Grid>

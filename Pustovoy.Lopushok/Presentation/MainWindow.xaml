@@ -33,38 +33,28 @@
                 Grid.Column="0"
                 Margin="10"
                 FontSize="20"
-                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.InputBindings>
-                    <KeyBinding 
-                        Command="{Binding Search}"
-                        Key="Enter"/>
-                </TextBox.InputBindings>
-            </TextBox>
+                x:Name="TextBoxInput"
+                TextChanged="TextBox_TextChanged"/>
             <ComboBox 
                 Grid.Column="1"
                 FontSize="20"
                 Margin="10"
-                SelectedIndex="{Binding SortIndex}">
-                <ComboBoxItem Content="Сортировка" IsSelected="True" Visibility="Collapsed"/>
-                <ComboBoxItem Content="Наименование &gt;"/>
-                <ComboBoxItem Content="Наименование &lt;"/>
-                <ComboBoxItem Content="Номер цеха &gt;"/>
-                <ComboBoxItem Content="Номер цеха &lt;"/>
-                <ComboBoxItem Content="Мин стоимость &gt;"/>
-                <ComboBoxItem Content="Мин стоимость &lt;"/>
-            </ComboBox>
+                x:Name="ComboBoxSort"
+                SelectionChanged="ComboBoxSort_SelectionChanged"
+                IsEditable="True"
+                IsReadOnly="True"
+                Text="Сортировка"
+                ItemsSource="{Binding ComboBoxSort, UpdateSourceTrigger=PropertyChanged}"/>
             <ComboBox 
                 Grid.Column="2"
                 FontSize="20"
                 Margin="10"
-                SelectedIndex="{Binding FilterIndex}">
-                <ComboBoxItem Content="Фильтрация" IsSelected="True" Visibility="Collapsed"/>
-                <ComboBoxItem Content="Тип 1"/>
-                <ComboBoxItem Content="Тип 2"/>
-                <ComboBoxItem Content="Тип 3"/>
-                <ComboBoxItem Content="Тип 4"/>
-                <ComboBoxItem Content="Тип 5"/>
-            </ComboBox>
+                x:Name="ComboBoxFilter"
+                SelectionChanged="ComboBoxFilter_SelectionChanged"
+                IsEditable="True"
+                IsReadOnly="True"
+                Text="Фильтрация"
+                ItemsSource="{Binding ComboBoxFilter, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
         <ListView
@@ -114,7 +104,7 @@
                             <Image 
                                 Grid.Column="0"
                                 Margin="10, 10, 0, 10"
-                                Source="{Binding Image}"/>
+                                Source="{Binding ImagePath}"/>
 
                             <Grid
                                 Grid.Column="1"
@@ -131,13 +121,7 @@
                                     Orientation="Horizontal"
                                     Margin="0, 15, 0, 0">
                                     <TextBlock 
-                                        Text="{Binding ProductType.Title}"
-                                        FontSize="20"/>
-                                    <TextBlock 
-                                        Text=" | "
-                                        FontSize="20"/>
-                                    <TextBlock 
-                                        Text="{Binding Title}"
+                                        Text="{Binding Name}"
                                         FontSize="20"/>
                                 </StackPanel>
 
