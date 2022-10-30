@@ -149,5 +149,16 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <ItemsControl
+            ItemsSource="{Binding ButtonList}"
+            Grid.Row="2"
+            HorizontalAlignment="Right">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </Window>

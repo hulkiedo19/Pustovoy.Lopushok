@@ -7,16 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Pustovoy.Lopushok.Presentation.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private List<Product> _allProducts = new List<Product>();
         private List<Product> _products = new List<Product>();
         private List<string> _comboBoxSort = new List<string>();
         private List<string> _comboBoxFilter = new List<string>();
+        private List<Button> _buttonList = new List<Button>();
         private int _selectedIndex;
+        private int _currentPage = 0;
+        private int _itemsCountPage = 20;
+        private int _maxPage = 1;
 
         public List<Product> Products
         {
@@ -38,10 +45,16 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
             get => _comboBoxFilter;
             set => Set(ref _comboBoxFilter, value, nameof(ComboBoxFilter));
         }
+        public List<Button> ButtonList
+        {
+            get => _buttonList;
+            set => Set(ref _buttonList, value, nameof(ButtonList));
+        }
 
         public MainWindowViewModel()
         {
             GetProducts();
+            InitializePages();
             InitializeComboBoxes();
         }
 
@@ -52,6 +65,8 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
                 GetProducts();
             else
                 GetProductsWithText(text);
+
+            InitializePages();
         }
 
         public void Sort(int index)
@@ -59,41 +74,45 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
             switch(index)
             {
                 case 0:
-                    Products = Products.OrderBy(p => p.Title).ToList();
+                    _allProducts = _allProducts.OrderBy(p => p.Title).ToList();
                     break;
                 case 1:
-                    Products = Products.OrderByDescending(p => p.Title).ToList();
+                    _allProducts = _allProducts.OrderByDescending(p => p.Title).ToList();
                     break;
                 case 2:
-                    Products = Products.OrderBy(p => p.ProductionWorkshopNumber).ToList();
+                    _allProducts = _allProducts.OrderBy(p => p.ProductionWorkshopNumber).ToList();
                     break;
                 case 3:
-                    Products = Products.OrderByDescending(p => p.ProductionWorkshopNumber).ToList();
+                    _allProducts = _allProducts.OrderByDescending(p => p.ProductionWorkshopNumber).ToList();
                     break;
                 case 4:
-                    Products = Products.OrderBy(p => p.MinCostForAgent).ToList();
+                    _allProducts = _allProducts.OrderBy(p => p.MinCostForAgent).ToList();
                     break;
                 case 5:
-                    Products = Products.OrderByDescending(p => p.MinCostForAgent).ToList();
+                    _allProducts = _allProducts.OrderByDescending(p => p.MinCostForAgent).ToList();
                     break;
             }
+
+            InitializePages();
         }
 
         public void Filter(List<string> Types, int Index)
         {
             GetProducts();
-            Products = Products.Where(p => p.ProductType.Title == Types[Index]).ToList();
+            _allProducts = _allProducts.Where(p => p.ProductType.Title == Types[Index]).ToList();
+            InitializePages();
         }
 
         public void DeleteItem()
         {
-            var product = _products.ElementAt(_selectedIndex);
+            var product = Products.ElementAt(_selectedIndex);
 
             DeleteProductMaterialsWithId(product.Id);
 
             DeleteProduct(product);
 
             GetProducts();
+            InitializePages();
         }
 
         public void AddItem()
@@ -101,6 +120,7 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
             ProductWindow window = new ProductWindow(null);
             window.ShowDialog();
             GetProducts();
+            InitializePages();
         }
 
         public void EditItem()
@@ -110,14 +130,106 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
             ProductWindow window = new ProductWindow(product);
             window.ShowDialog();
             GetProducts();
+            InitializePages();
         }
 
         // local methods
+
+        private void InitializePages()
+        {
+            _currentPage = 0;
+            _maxPage = GetPageMax();
+            SetPage();
+            SetButtons();
+        }
+
+        private int GetPageMax()
+        {
+            return (_allProducts.Count / _itemsCountPage) + ((_allProducts.Count % _itemsCountPage) > 0 ? 1 : 0);
+        }
+
+        private void SetPage()
+        {
+            Products = _allProducts
+                .Skip(_currentPage * _itemsCountPage)
+                .Take(_itemsCountPage)
+                .ToList();
+        }
+
+        private void SetButtons()
+        {
+            List<Button> buttons = new List<Button>();
+
+            Button leftPage = new Button();
+            leftPage.Content = "<";
+            leftPage.Margin = new Thickness(0, 0, 2, 0);
+            leftPage.BorderBrush = new SolidColorBrush(Colors.White);
+            leftPage.BorderThickness = new Thickness(0);
+            leftPage.Background = new SolidColorBrush(Colors.White);
+            leftPage.Click += LeftPage_Click;
+            buttons.Add(leftPage);
+
+            for(int i = 0; i < _maxPage; i++)
+            {
+                Button specifiedNumberPage = new Button();
+                specifiedNumberPage.Content = $"{i + 1}";
+                specifiedNumberPage.Margin = new Thickness(0, 0, 2, 0);
+                specifiedNumberPage.BorderBrush = new SolidColorBrush(Colors.White);
+                specifiedNumberPage.BorderThickness = new Thickness(0);
+                specifiedNumberPage.Background = new SolidColorBrush(Colors.White);
+                specifiedNumberPage.Click += SpecifiedNumberPage_Click;
+                buttons.Add(specifiedNumberPage);
+            }
+
+            Button rightPage = new Button();
+            rightPage.Content = ">";
+            rightPage.Margin = new Thickness(0, 0, 2, 0);
+            rightPage.BorderBrush = new SolidColorBrush(Colors.White);
+            rightPage.BorderThickness = new Thickness(0);
+            rightPage.Background = new SolidColorBrush(Colors.White);
+            rightPage.Click += RightPage_Click;
+            buttons.Add(rightPage);
+
+            ButtonList = buttons;
+        }
+
+        private void SpecifiedNumberPage_Click(object sender, RoutedEventArgs e)
+        {
+            var content = sender as Button;
+
+            int index = Convert.ToInt32(content.Content);
+
+            _currentPage = index - 1;
+            SetPage();
+        }
+
+        private void RightPage_Click(object sender, RoutedEventArgs e)
+        {
+            var content = sender as Button;
+
+            if (_currentPage >= _maxPage - 1)
+                return;
+
+            _currentPage++;
+            SetPage();
+        }
+
+        private void LeftPage_Click(object sender, RoutedEventArgs e)
+        {
+            var content = sender as Button;
+
+            if (_currentPage <= 0)
+                return;
+
+            _currentPage--;
+            SetPage();
+        }
+
         private void GetProducts()
         {
             using (ApplicationDbContext context = new ApplicationDbContext())
             {
-                Products = context.Products
+                _allProducts = context.Products
                     .Include(pm => pm.ProductMaterials)
                     .ThenInclude(m => m.Material)
                     .Include(p => p.ProductType)
@@ -129,7 +241,7 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
         {
             using (ApplicationDbContext context = new ApplicationDbContext())
             {
-                Products = context.Products
+                _allProducts = context.Products
                     .Include(pm => pm.ProductMaterials)
                     .ThenInclude(m => m.Material)
                     .Include(p => p.ProductType)
