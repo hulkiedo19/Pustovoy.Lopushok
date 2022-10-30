@@ -68,13 +68,13 @@
                 <ContextMenu>
                     <MenuItem 
                         Header="Добавить"
-                        Command="{Binding AddItem}"/>
+                        Click="MenuItemAdd_Click"/>
                     <MenuItem 
                         Header="Удалить"
-                        Command="{Binding DeleteItem}"/>
+                        Click="MenuItemDelete_Click"/>
                     <MenuItem 
                         Header="Редактировать"
-                        Command="{Binding EditItem}"/>
+                        Click="MenuItemEdit_Click"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.ItemContainerStyle>

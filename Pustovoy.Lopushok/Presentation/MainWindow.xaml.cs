@@ -45,5 +45,23 @@ namespace Pustovoy.Lopushok.Presentation
             if (_viewModel != null)
                 _viewModel.Filter(ComboBoxFilter.ItemsSource as List<string>, ComboBoxFilter.SelectedIndex);
         }
+
+        private void MenuItemDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel != null)
+                _viewModel.DeleteItem();
+        }
+
+        private void MenuItemAdd_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel != null)
+                _viewModel.AddItem();
+        }
+
+        private void MenuItemEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel != null)
+                _viewModel.EditItem();
+        }
     }
 }

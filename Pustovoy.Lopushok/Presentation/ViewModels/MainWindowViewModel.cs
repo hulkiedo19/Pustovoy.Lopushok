@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pustovoy.Lopushok.Domain.Entities;
 using Pustovoy.Lopushok.Infrastucture.Persistence;
-using Pustovoy.Lopushok.Presentation.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +13,9 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private List<Product> _products;
-        private List<string> _comboBoxSort;
-        private List<string> _comboBoxFilter;
+        private List<Product> _products = new List<Product>();
+        private List<string> _comboBoxSort = new List<string>();
+        private List<string> _comboBoxFilter = new List<string>();
         private int _selectedIndex;
 
         public List<Product> Products
@@ -40,17 +39,13 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
             set => Set(ref _comboBoxFilter, value, nameof(ComboBoxFilter));
         }
 
-        public ICommand AddItem => new AddItemCommand(this);
-        public ICommand EditItem => new EditItemCommand(this);
-        public ICommand DeleteItem => new DeleteItemCommand(this);
-
         public MainWindowViewModel()
         {
-            _products = new List<Product>();
             GetProducts();
             InitializeComboBoxes();
         }
 
+        // called methods
         public void Search(string text)
         {
             if (text == "")
@@ -90,6 +85,34 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
             Products = Products.Where(p => p.ProductType.Title == Types[Index]).ToList();
         }
 
+        public void DeleteItem()
+        {
+            var product = _products.ElementAt(_selectedIndex);
+
+            DeleteProductMaterialsWithId(product.Id);
+
+            DeleteProduct(product);
+
+            GetProducts();
+        }
+
+        public void AddItem()
+        {
+            ProductWindow window = new ProductWindow(null);
+            window.ShowDialog();
+            GetProducts();
+        }
+
+        public void EditItem()
+        {
+            var product = _products.ElementAt(_selectedIndex);
+
+            ProductWindow window = new ProductWindow(product);
+            window.ShowDialog();
+            GetProducts();
+        }
+
+        // local methods
         private void GetProducts()
         {
             using (ApplicationDbContext context = new ApplicationDbContext())
@@ -117,26 +140,44 @@ namespace Pustovoy.Lopushok.Presentation.ViewModels
 
         private void InitializeComboBoxes()
         {
-            ComboBoxSort = new List<string>()
-            {
-                "Наименование >",
-                "Наименование <",
-                "Номер цеха >",
-                "Номер цеха <",
-                "Мин стоимость >",
-                "Мин стоимость <"
-            };
+            ComboBoxSort.Add("Наименование >");
+            ComboBoxSort.Add("Наименование <");
+            ComboBoxSort.Add("Номер цеха >");
+            ComboBoxSort.Add("Номер цеха <");
+            ComboBoxSort.Add("Мин стоимость >");
+            ComboBoxSort.Add("Мин стоимость <");
 
             using(ApplicationDbContext context = new ApplicationDbContext())
             {
-                List<string> types = new List<string>();
-                List<ProductType> productTypes = context.ProductTypes
+                foreach (var pt in context.ProductTypes.ToList())
+                    ComboBoxFilter.Add(pt.Title);
+            }
+        }
+
+        private void DeleteProductMaterialsWithId(int Id)
+        {
+            using(ApplicationDbContext context = new ApplicationDbContext())
+            {
+                var productMaterials = context.ProductMaterials
+                    .Where(p => p.ProductId == Id)
                     .ToList();
 
-                foreach (var pt in productTypes)
-                    types.Add(pt.Title);
+                if (productMaterials.Count == 0)
+                    return;
 
-                ComboBoxFilter = types;
+                foreach (var pm in productMaterials)
+                    context.ProductMaterials.Remove(pm);
+
+                context.SaveChanges();
+            }
+        }
+
+        private void DeleteProduct(Product product)
+        {
+            using(ApplicationDbContext context = new ApplicationDbContext())
+            {
+                context.Products.Remove(product);
+                context.SaveChanges();
             }
         }
     }
