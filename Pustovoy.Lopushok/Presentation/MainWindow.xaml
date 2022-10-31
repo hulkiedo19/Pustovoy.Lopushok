@@ -13,7 +13,7 @@
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.125*"/>
@@ -39,21 +39,21 @@
                 Grid.Column="1"
                 FontSize="20"
                 Margin="10"
-                x:Name="ComboBoxSort"
-                SelectionChanged="ComboBoxSort_SelectionChanged"
                 IsEditable="True"
                 IsReadOnly="True"
                 Text="Сортировка"
+                x:Name="ComboBoxSort"
+                SelectionChanged="ComboBoxSort_SelectionChanged"
                 ItemsSource="{Binding ComboBoxSort, UpdateSourceTrigger=PropertyChanged}"/>
             <ComboBox 
                 Grid.Column="2"
                 FontSize="20"
                 Margin="10"
-                x:Name="ComboBoxFilter"
-                SelectionChanged="ComboBoxFilter_SelectionChanged"
                 IsEditable="True"
                 IsReadOnly="True"
                 Text="Фильтрация"
+                x:Name="ComboBoxFilter"
+                SelectionChanged="ComboBoxFilter_SelectionChanged"
                 ItemsSource="{Binding ComboBoxFilter, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
@@ -63,97 +63,82 @@
             BorderBrush="White"
             HorizontalAlignment="Center"
             ScrollViewer.VerticalScrollBarVisibility="Hidden"
+            MouseDoubleClick="ListView_MouseDoubleClick"
             SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged}">
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem 
-                        Header="Добавить"
-                        Click="MenuItemAdd_Click"/>
-                    <MenuItem 
-                        Header="Удалить"
-                        Click="MenuItemDelete_Click"/>
-                    <MenuItem 
-                        Header="Редактировать"
-                        Click="MenuItemEdit_Click"/>
-                </ContextMenu>
-            </ListView.ContextMenu>
             <ListView.ItemContainerStyle>
-                <Style
-                    TargetType="ListViewItem">
-                    <Setter
-                        Property="Margin"
-                        Value="0, 5, 0, 5"/>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Margin" Value="0, 5, 0, 5"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Background" Value="{StaticResource ColorSecondary}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource ColorAccent}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{StaticResource ColorSelect}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource ColorSelect}"/>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border
-                        Background="{StaticResource ColorSecondary}"
-                        BorderBrush="{StaticResource ColorAccent}"
-                        BorderThickness="1"
-                        Margin="0">
+                    <Grid
+                        Width="750"
+                        Height="100">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image 
+                            Grid.Column="0"
+                            Margin="10, 10, 0, 10"
+                            Source="{Binding ImagePath}"/>
+
                         <Grid
-                            Width="750"
-                            Height="100">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="100"/>
-                            </Grid.ColumnDefinitions>
+                            Grid.Column="1"
+                            Height="100"
+                            Margin="30, 0, 0, 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="60"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
 
-                            <Image 
-                                Grid.Column="0"
-                                Margin="10, 10, 0, 10"
-                                Source="{Binding ImagePath}"/>
-
-                            <Grid
-                                Grid.Column="1"
-                                Height="100"
-                                Margin="30, 0, 0, 0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="60"/>
-                                    <RowDefinition Height="40"/>
-                                </Grid.RowDefinitions>
-
-                                <StackPanel
-                                    Grid.Row="0"
-                                    VerticalAlignment="Top"
-                                    Orientation="Horizontal"
-                                    Margin="0, 15, 0, 0">
-                                    <TextBlock 
-                                        Text="{Binding Name}"
-                                        FontSize="20"/>
-                                </StackPanel>
-
-                                <TextBlock 
-                                    Grid.Row="0"
-                                    Text="{Binding ArticleNumber}"
-                                    FontSize="15"
-                                    VerticalAlignment="Bottom"/>
-
-                                <TextBlock 
-                                    Grid.Row="1"
-                                    Text="{Binding Materials}"
-                                    TextWrapping="WrapWithOverflow"
-                                    FontSize="15"/>
-                            </Grid>
-
-                            <TextBlock
-                                Grid.Column="2"
-                                Text="{Binding Cost}"
-                                FontSize="15"
+                            <TextBlock 
+                                Grid.Row="0"
+                                FontSize="20"
                                 Margin="0, 15, 0, 0"
-                                VerticalAlignment="Top"/>
+                                Text="{Binding Name}"/>
+
+                            <TextBlock 
+                                Grid.Row="0"
+                                Text="{Binding ArticleNumber}"
+                                FontSize="15"
+                                VerticalAlignment="Bottom"/>
+
+                            <TextBlock 
+                                Grid.Row="1"
+                                Text="{Binding Materials}"
+                                TextWrapping="WrapWithOverflow"
+                                FontSize="15"/>
                         </Grid>
-                    </Border>
+
+                        <TextBlock
+                            Grid.Column="2"
+                            Text="{Binding Cost}"
+                            FontSize="15"
+                            Margin="0, 15, 0, 0"
+                            VerticalAlignment="Top"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
         <ItemsControl
-            ItemsSource="{Binding ButtonList}"
             Grid.Row="2"
-            HorizontalAlignment="Right">
+            Margin="5, 5, 15, 5"
+            HorizontalAlignment="Right"
+            ItemsSource="{Binding ButtonList, UpdateSourceTrigger=PropertyChanged}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
