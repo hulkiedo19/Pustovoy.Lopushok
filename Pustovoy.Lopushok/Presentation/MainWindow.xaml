@@ -7,9 +7,10 @@
         xmlns:vm="clr-namespace:Pustovoy.Lopushok.Presentation.ViewModels"
         mc:Ignorable="d"
         Title="Лопушок" 
-        Height="600"
+        Height="600" 
         Width="800"
-        Icon="../Resources/lopushok.ico">
+        ResizeMode="NoResize"
+        Icon="../Resources/lopushok.png">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -31,50 +32,55 @@
 
             <TextBox
                 Grid.Column="0"
-                Margin="10"
                 FontSize="20"
-                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.InputBindings>
-                    <KeyBinding 
-                        Command="{Binding Search}"        
-                        Key="Enter"/>
-                </TextBox.InputBindings>
-            </TextBox>
+                Margin="10"
+                x:Name="TextBoxInput"
+                TextChanged="TextBoxInput_TextChanged"/>
             <ComboBox 
                 Grid.Column="1"
+                IsEditable="True"
+                IsReadOnly="True"
+                Text="Сортировка"
                 FontSize="20"
                 Margin="10"
-                SelectedIndex="{Binding SortIndex}">
-                <ComboBoxItem IsSelected="True" Visibility="Collapsed" Content="Сортировка"/>
-                <ComboBoxItem Content="Наименование &gt;"/>
-                <ComboBoxItem Content="Наименование &lt;"/>
-                <ComboBoxItem Content="Номер цеха &gt;"/>
-                <ComboBoxItem Content="Номер цеха &lt;"/>
-                <ComboBoxItem Content="Минимальная стоимость &gt;"/>
-                <ComboBoxItem Content="Минимальная стоимость &lt;"/>
-            </ComboBox>
+                x:Name="ComboBoxSort"
+                SelectionChanged="ComboBoxSort_SelectionChanged"
+                ItemsSource="{Binding ComboBoxSort, UpdateSourceTrigger=PropertyChanged}"/>
             <ComboBox 
                 Grid.Column="2"
+                IsEditable="True"
+                IsReadOnly="True"
+                Text="Фильтрация"
                 FontSize="20"
                 Margin="10"
-                SelectedIndex="{Binding FilterIndex}">
-                <ComboBoxItem Content="Фильтрация" IsSelected="True" Visibility="Collapsed"/>
-                <ComboBoxItem Content="Тип1"/>
-                <ComboBoxItem Content="Тип2"/>
-                <ComboBoxItem Content="Тип3"/>
-                <ComboBoxItem Content="Тип4"/>
-                <ComboBoxItem Content="Тип5"/>
-            </ComboBox>
+                x:Name="ComboBoxFilter"
+                SelectionChanged="ComboBoxFilter_SelectionChanged"
+                ItemsSource="{Binding ComboBoxFilter, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
         <ListView
-            ItemsSource="{Binding Products}"
+            ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}"
             Grid.Row="1"
             BorderBrush="White"
             HorizontalAlignment="Center"
-            ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            ScrollViewer.VerticalScrollBarVisibility="Hidden"
+            SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged}">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                        Header="Добавить"
+                        Click="MenuItemAdd_Click"/>
+                    <MenuItem
+                        Header="Удалить"
+                        Click="MenuItemDelete_Click"/>
+                    <MenuItem
+                        Header="Редактировать"
+                        Click="MenuItemEdit_Click"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+                <Style
+                    TargetType="ListViewItem">
                     <Setter 
                         Property="Margin"
                         Value="0, 5, 0, 5"/>
@@ -99,7 +105,7 @@
                             <Image 
                                 Grid.Column="0"
                                 Margin="10, 10, 0, 10"
-                                Source="{Binding Image}"/>
+                                Source="{Binding ImagePath}"/>
 
                             <Grid
                                 Grid.Column="1"
@@ -116,24 +122,17 @@
                                     Orientation="Horizontal"
                                     Margin="0, 15, 0, 0">
                                     <TextBlock 
-                                        Text="{Binding ProductType.Title}"
-                                        FontSize="20"/>
-                                    <TextBlock 
-                                        Text=" | "
-                                        FontSize="20"/>
-                                    <TextBlock 
-                                        Text="{Binding Title}"
+                                        Text="{Binding Name}"
                                         FontSize="20"/>
                                 </StackPanel>
 
-                                <TextBlock
+                                <TextBlock 
                                     Grid.Row="0"
                                     Text="{Binding ArticleNumber}"
-                                    Margin="0, 0, 0, 0"
                                     FontSize="15"
                                     VerticalAlignment="Bottom"/>
 
-                                <TextBlock
+                                <TextBlock 
                                     Grid.Row="1"
                                     Text="{Binding Materials}"
                                     TextWrapping="WrapWithOverflow"
@@ -144,12 +143,23 @@
                                 Grid.Column="2"
                                 Text="{Binding Cost}"
                                 FontSize="15"
-                                VerticalAlignment="Top"
-                                Margin="0, 15, 0, 0"/>
+                                Margin="0, 15, 0, 0"
+                                VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <ItemsControl
+            Grid.Row="2"
+            HorizontalAlignment="Right"
+            ItemsSource="{Binding ButtonsList, UpdateSourceTrigger=PropertyChanged}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </Window>

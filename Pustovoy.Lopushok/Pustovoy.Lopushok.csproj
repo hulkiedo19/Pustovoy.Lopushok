@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="Infrastructure\**" />
+    <Page Remove="Infrastructure\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\lopushok.ico" />
     <None Remove="Resources\lopushok.png" />
     <None Remove="Resources\picture.png" />
@@ -42,7 +49,6 @@
   <ItemGroup>
     <Folder Include="Application\" />
     <Folder Include="Domain\Entities\" />
-    <Folder Include="Infrastructure\Persistence\" />
   </ItemGroup>
 
   <ItemGroup>

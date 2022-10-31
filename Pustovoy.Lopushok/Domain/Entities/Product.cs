@@ -2,6 +2,7 @@
 using Pustovoy.Lopushok.Infrastucture.Persistence;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 
@@ -26,35 +27,48 @@ namespace Pustovoy.Lopushok.Domain.Entities
         public string? Description { get; set; }
         public string? Image
         {
+            get => _image;
+            set => _image = value;
+        }
+        public int? ProductionPersonCount { get; set; }
+        public int? ProductionWorkshopNumber { get; set; }
+        public decimal MinCostForAgent 
+        { 
+            get => _minCostForAgent; 
+            set => _minCostForAgent = value; 
+        }
+
+        [NotMapped]
+        public string ImagePath
+        {
             get => (_image == string.Empty) || (_image == null)
                 ? $"..\\Resources\\picture.png"
                 : $"..\\Resources{_image.Replace("jpg", "jpeg")}";
             set => _image = value;
         }
-        public int? ProductionPersonCount { get; set; }
-        public int? ProductionWorkshopNumber { get; set; }
-        public decimal MinCostForAgent
-        {
-            get => _minCostForAgent;
-            set => _minCostForAgent = value;
-        }
 
-        public string? Materials
+        [NotMapped]
+        public string Name
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
-                List<ProductMaterial> productMaterials = new ApplicationDbContext().ProductMaterials
-                    .Include(m => m.Material)
-                    .Where(p => p.ProductId == this.Id)
-                    .ToList();
+                var productTypeTitle = (ProductType == null) ? "Тип" : ProductType.Title;
+                return $"{productTypeTitle} | {Title}";
+            }
+        }
 
-                if (productMaterials.Count == 0)
+        [NotMapped]
+        public string Materials
+        {
+            get
+            {
+                if (ProductMaterials.Count == 0)
                     return "Материалов нет";
 
+                StringBuilder sb = new StringBuilder();
                 sb.Append("Материалы: ");
 
-                foreach (ProductMaterial pm in productMaterials)
+                foreach (var pm in ProductMaterials)
                     sb.Append($"{pm.Material.Title}, ");
 
                 sb.Remove(sb.Length - 2, 2);
@@ -62,22 +76,17 @@ namespace Pustovoy.Lopushok.Domain.Entities
                 return sb.ToString();
             }
         }
+        [NotMapped]
         public decimal Cost
         {
             get
             {
-                decimal cost = _minCostForAgent;
-                List<ProductMaterial> productMaterials = new ApplicationDbContext().ProductMaterials
-                    .Include(m => m.Material)
-                    .Where(p => p.ProductId == this.Id)
-                    .ToList();
+                if (ProductMaterials.Count == 0)
+                    return _minCostForAgent;
 
-                if (productMaterials.Count == 0)
-                    return cost;
-
-                cost = 0;
-                foreach (ProductMaterial pm in productMaterials)
-                    cost += pm.Material.Cost;
+                decimal cost = 0;
+                foreach (var pm in ProductMaterials)
+                    cost += Math.Ceiling((decimal)pm.Count) * pm.Material.Cost;
 
                 return cost;
             }
